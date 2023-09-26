@@ -7,4 +7,7 @@ stop-postgres:
 remove-postgres:
 	docker rm postgres-nest
 
+remove-containers:
+	docker container prune -f
+
 .PHONY: start-postgres stop-postgres remove-postgres
