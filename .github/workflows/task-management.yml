@@ -12,6 +12,7 @@ on:
   
 env:
   IMAGE_NAME: task-management
+  TAG: $(echo "${{ github.sha }}" | cut -c1-7)
 
 #############################################################
 # Specifies jobs to run
@@ -50,7 +51,8 @@ jobs:
         uses: mamezou-tech/buildpacks-action@master
         with:
           builder: gcr.io/buildpacks/builder:latest
-          image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image: ${{ env.IMAGE_NAME }}
+          tag: ${{ env.TAG }}
       - name: List Docker Images
         run: docker images ls
       - name: Run Trivy Vulnerability Scan
