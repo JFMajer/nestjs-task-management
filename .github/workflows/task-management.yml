@@ -36,7 +36,8 @@ jobs:
         run: yarn install
       - name: Code Vulnerability Check
         uses: anchore/scan-action@v3
-        with:
+        id: scan-build
+        with:  
           path: "${{ github.workspace }}"
           fail-build: true
           severity-cutoff: "high"
@@ -45,10 +46,10 @@ jobs:
         with:
           sarif_file: ${{ steps.scan-build.outputs.sarif }}
       - name: Build OCI Image with Buildpacks
-        uses: buildpacksio/buildpacks@v3.3.0
+        uses: mamezou-tech/buildpacks-action@master
         with:
           builder: gcr.io/buildpacks/builder:latest
-          output-image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
       - name: List Docker Images
         run: docker images ls
       - name: Run Trivy Vulnerability Scan
