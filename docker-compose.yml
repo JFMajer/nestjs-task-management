@@ -6,3 +6,14 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
+
+  task-management:
+    container_name: task-management
+    image: task-management:latest
+    environment:
+      DB_HOST: postgres-nest
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres-nest

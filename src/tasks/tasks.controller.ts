@@ -11,10 +11,17 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './dto/task.entity';
+import { DeleteResult } from 'typeorm';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private tasksService: TasksService) {}
+
+  // delete all tasks
+  @Delete('delete-all')
+  deleteAllTasks(): Promise<void> {
+    return this.tasksService.deleteAllTasks();
+  }
 
   // get all tasks
   @Get()
@@ -35,14 +42,14 @@ export class TasksController {
   }
 
   // create multiple tasks
-  @Post('/multiple')
+  @Post('multiple')
   createMultipleTasks(@Body() createTaskDto: CreateTaskDto[]): Promise<Task[]> {
     return this.tasksService.createMultipleTasks(createTaskDto);
   }
 
   // delete task by id
   @Delete(':id')
-  deleteTask(@Param('id') id: string): Promise<void> {
+  deleteTask(@Param('id') id: string): Promise<DeleteResult> {
     return this.tasksService.remove(id);
   }
 

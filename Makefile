@@ -16,4 +16,7 @@ compose-up:
 compose-down:
 	docker-compose down
 
-.PHONY: start-postgres stop-postgres remove-postgres
+build:
+	pack build task-management --builder gcr.io/buildpacks/builder:latest
+
+.PHONY: start-postgres stop-postgres remove-postgres remove-containers compose-up compose-down build

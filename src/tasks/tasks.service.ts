@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TaskStatus } from './task.model';
-import { v4 } from 'uuid';
+import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { NotFoundException } from '@nestjs/common';
 // import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Task } from './dto/task.entity';
 
 @Injectable()
@@ -33,19 +32,25 @@ export class TasksService {
     return taskToBeReturned;
   }
 
-  async remove(id: string): Promise<void> {
-    await this.taskRepository.delete(id);
+  async remove(id: string): Promise<DeleteResult> {
+    const result = await this.taskRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
+    } else {
+      return result;
+    }
   }
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { title, description } = createTaskDto;
-    const task: Task = {
-      id: v4(),
+    const task = this.taskRepository.create({
       title,
       description,
       status: TaskStatus.OPEN,
-    };
-    return await this.taskRepository.save(task);
+    });
+
+    await this.taskRepository.save(task);
+    return task;
   }
 
   async createMultipleTasks(createTaskDtos: CreateTaskDto[]): Promise<Task[]> {
@@ -53,12 +58,11 @@ export class TasksService {
 
     for (const createTaskDto of createTaskDtos) {
       const { title, description } = createTaskDto;
-      const task: Task = {
-        id: v4(),
+      const task = this.taskRepository.create({
         title,
         description,
         status: TaskStatus.OPEN,
-      };
+      });
 
       const createdTask = await this.taskRepository.save(task);
       createdTasks.push(createdTask);
@@ -78,5 +82,9 @@ export class TasksService {
     }
     taskToBeUpdated.status = status;
     return await this.taskRepository.save(taskToBeUpdated);
+  }
+
+  async deleteAllTasks(): Promise<void> {
+    await this.taskRepository.clear();
   }
 }
