@@ -10,4 +10,10 @@ remove-postgres:
 remove-containers:
 	docker container prune -f
 
+compose-up:
+	docker-compose up -d
+
+compose-down:
+	docker-compose down
+
 .PHONY: start-postgres stop-postgres remove-postgres
