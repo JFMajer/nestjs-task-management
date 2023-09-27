@@ -54,11 +54,11 @@ jobs:
           image: ${{ env.IMAGE_NAME }}
           tag: ${{ env.TAG }}
       - name: List Docker Images
-        run: docker images ls
+        run: docker image ls
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: task-management:latest
+          image-ref: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
