@@ -23,6 +23,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      security-events: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -55,7 +56,7 @@ jobs:
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: catalog-service:latest
+          image-ref: task-management:latest
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
