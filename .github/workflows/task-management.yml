@@ -1,0 +1,66 @@
+#############################################################
+# Specifies when workflow will run
+#############################################################
+
+on:
+    workflow_dispatch:
+    push:
+      branches:
+        - main
+    pull_request:
+      types: [opened, synchronize, reopened]
+  
+  env:
+    IMAGE_NAME: task-management
+  
+  #############################################################
+  # Specifies jobs to run
+  #############################################################
+  
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        packages: write
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
+        - name: Set up Node
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18
+        - name: Install yarn
+          run: npm install -g yarn
+        - name: Install dependencies
+          run: yarn install
+        - name: Code Vulnerability Check
+          uses: anchore/scan-action@v3
+          with:
+            path: "${{ github.workspace }}"
+            fail-build: true
+            severity-cutoff: "high"
+        - name: Upload Anchore scan SARIF report
+          uses: github/codeql-action/upload-sarif@v2
+          with:
+            sarif_file: ${{ steps.scan-build.outputs.sarif }}
+        - name: Build OCI Image with Buildpacks
+          uses: buildpacksio/buildpacks@v3.3.0
+          with:
+            builder: gcr.io/buildpacks/builder:latest
+            output-image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+        - name: List Docker Images
+          run: docker images ls
+        - name: Run Trivy Vulnerability Scan
+          uses: aquasecurity/trivy-action@master
+          with:
+            image-ref: catalog-service:latest
+            format: 'sarif'
+            output: 'trivy-results.sarif'
+            severity: 'CRITICAL,HIGH'
+            exit-code: '1'
+        - name: Upload Trivy scan SARIF report
+          uses: github/codeql-action/upload-sarif@v2
+          if: always()
+          with:
+            sarif_file: trivy-results.sarif
