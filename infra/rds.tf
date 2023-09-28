@@ -1,34 +1,30 @@
 locals {
-    name = "postgres"
-    tags = {
-        Name = local.name
-    }
+  name = "postgres"
 }
 
 module "rds" {
-    source = "terraform-aws-modules/rds/aws"
-    version = "~> 6.0"
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 6.0"
 
-    engine = "postgres"
-    engine_version = "15"
-    family = "postgres15"
-    major_engine_version = "15"
-    instance_class       = "db.t4g.small"
+  engine               = "postgres"
+  engine_version       = "15"
+  family               = "postgres15"
+  major_engine_version = "15"
+  instance_class       = "db.t4g.small"
 
-    allocated_storage = 20
+  allocated_storage = 20
 
-    db_name = "task_management"
-    db_username = "postgres"
-    port = 5432
+  db_name     = "task_management"
+  db_username = "postgres"
+  port        = 5432
 
-    multi_az = false
-    storage_type = "gp3"
+  multi_az     = false
+  storage_type = "gp3"
 
-    db_subnet_group_name = module.vpc.database_subnet_group
-    vpc_security_group_ids = [module.security_group.security_group_id]
+  db_subnet_group_name   = module.vpc.database_subnet_group
+  vpc_security_group_ids = [module.security_group.security_group_id]
 
-    tags = local.tags        
-    
+
 }
 
 
