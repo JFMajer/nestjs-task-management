@@ -11,8 +11,8 @@ on:
       types: [opened, synchronize, reopened]
   
 env:
-  IMAGE_NAME: task-management
-  TAG: $(echo "${{ github.sha }}" | cut -c1-7)
+  APP_NAME: task-management
+
 
 #############################################################
 # Specifies jobs to run
@@ -26,13 +26,17 @@ jobs:
       packages: write
       security-events: write
     steps:
-      - name: Set image name and store in env variables
-        id: set_image_name
+      - name: Set image tag
         run: |
           echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+      - name: Set image name
+        run: |
+          IMAGE_NAME = ${{ env.APP_NAME }}
+          IMAGE_NAME_WITH_TAG="${IMAGE_NAME}:${SHORT_SHA}"
+          echo "IMAGE_NAME_WITH_TAG=${IMAGE_NAME_WITH_TAG}" >> $GITHUB_ENV
       - name: Output image name
         run: |
-          echo $SHORT_SHA
+          echo $IMAGE_NAME_WITH_TAG
       # - name: Checkout Code
       #   uses: actions/checkout@v4
       # - name: Set up Node
