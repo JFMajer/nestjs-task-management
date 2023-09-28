@@ -65,11 +65,11 @@ resource "random_password" "db_password" {
   override_special = "_%@"
 }
 
-resource "aws_secretmanager_secret" "db_secret" {
+resource "aws_secretsmanager_secret" "db_secret" {
   name = "postgres-secret"
 }
 
-resource "aws_secretmanager_secret_version" "db_secret_version" {
+resource "aws_secretsmanager_secret_version" "db_secret_version" {
   secret_id     = aws_secretmanager_secret.db_secret.id
   secret_string = <<EOF
   {
