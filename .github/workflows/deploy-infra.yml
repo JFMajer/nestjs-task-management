@@ -1,0 +1,90 @@
+name: Deploy shared infra
+
+on:
+  push:
+    paths:
+      - 'infra/**'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      destruction:
+        description: 'Remove entire infrastructure'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  deploy-infra:
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    env:
+      WORKING_DIR: .
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: echo "💡 The ${{ github.repository }} repository is being cloned to the runner."
+      - uses: actions/checkout@v3
+      - name: list files
+        run: ls -la
+      - uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["**/*.tf"]'
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          DYNAMO_TABLE: ${{ secrets.DYNAMO_TABLE }}
+          ENV: ${{ vars.ENV }}
+          CONSOLE_ROLE_ARN: ${{ secrets.CONSOLE_ROLE_ARN }}
+      - uses: hashicorp/setup-terraform@v2
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Terraform Init
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform init
+      # - name: Unlock state
+      #   run: terraform force-unlock -force "e8e74abd-9b78-a47a-f069-76759e2039ba"
+      - name: Terraform Plan
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform plan -out=plan.out
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.destruction != 'true' }}
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform apply plan.out
+      - name: Terraform Destroy
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform destroy -auto-approve
+        if: ${{ github.event.inputs.destruction == 'true' }}
+      - name: Terraform Output
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform output -json
+  
+  check-auth-configmap:
+    needs: deploy-infra
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    env:
+      WORKING_DIR: .
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: configure kubectl
+        run: |
+          export CLUSTER_NAME=$(aws eks list-clusters --output text --query 'clusters[0]')
+          echo $CLUSTER_NAME
+          aws eks update-kubeconfig --name $CLUSTER_NAME --region eu-north-1
+      - name: show auth-map
+        run: kubectl describe configmap -n kube-system aws-auth
