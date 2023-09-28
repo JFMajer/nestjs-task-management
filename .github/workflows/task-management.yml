@@ -26,6 +26,10 @@ jobs:
       packages: write
       security-events: write
     steps:
+      - name: Set image name and store in env variables
+        run: |
+          echo "IMAGE_FULL=${{ env.IMAGE_NAME }}:${{ env.TAG }}" >> $GITHUB_ENV
+          echo $IMAGE_FULL
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Set up Node
@@ -57,7 +61,8 @@ jobs:
         run: docker image ls
       - name: Set OCI Image reference
         id: image_ref
-        run: echo "::set-output name=image_ref::$env:IMAGE_NAME:$env:TAG"
+        run: |
+            
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
