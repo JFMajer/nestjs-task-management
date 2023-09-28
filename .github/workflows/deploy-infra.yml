@@ -22,7 +22,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      WORKING_DIR: '/infra'
+      WORKING_DIR: infra
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was triggered by a ${{ github.event_name }} event."

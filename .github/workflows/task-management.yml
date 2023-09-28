@@ -1,6 +1,7 @@
 #############################################################
 # Specifies when workflow will run
 #############################################################
+name: Build, scan and push OCI image
 
 on:
     workflow_dispatch:
