@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Set image name and store in env variables
         run: |
-          echo "IMAGE_TAG=${{ env.TAG }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=echo "${{ github.sha }}" | cut -c1-7" >> $GITHUB_ENV
           echo $IMAGE_TAG
       # - name: Checkout Code
       #   uses: actions/checkout@v4
