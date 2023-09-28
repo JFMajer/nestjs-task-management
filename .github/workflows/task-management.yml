@@ -31,7 +31,7 @@ jobs:
           echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
       - name: Set image name
         run: |
-          IMAGE_NAME = ${{ env.APP_NAME }}
+          IMAGE_NAME=${{ env.APP_NAME }}
           IMAGE_NAME_WITH_TAG="${IMAGE_NAME}:${SHORT_SHA}"
           echo "IMAGE_NAME_WITH_TAG=${IMAGE_NAME_WITH_TAG}" >> $GITHUB_ENV
       - name: Output image name
