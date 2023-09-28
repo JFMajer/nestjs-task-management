@@ -29,57 +29,48 @@ jobs:
       - name: Set image tag
         run: |
           echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
-      - name: Set image name
-        run: |
-          IMAGE_NAME=${{ env.APP_NAME }}
-          IMAGE_NAME_WITH_TAG="${IMAGE_NAME}:${SHORT_SHA}"
-          echo "IMAGE_NAME_WITH_TAG=${IMAGE_NAME_WITH_TAG}" >> $GITHUB_ENV
       - name: Output image name
         run: |
           echo "${{ env.APP_NAME }}:$SHORT_SHA"
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
-      # - name: Set up Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
-      # - name: Install yarn
-      #   run: npm install -g yarn
-      # - name: Install dependencies
-      #   run: yarn install
-      # - name: Code Vulnerability Check
-      #   uses: anchore/scan-action@v3
-      #   id: scan-build
-      #   with:  
-      #     path: "${{ github.workspace }}"
-      #     fail-build: true
-      #     severity-cutoff: "high"
-      # - name: Upload Anchore scan SARIF report
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     sarif_file: ${{ steps.scan-build.outputs.sarif }}
-      # - name: Build OCI Image with Buildpacks
-      #   uses: mamezou-tech/buildpacks-action@master
-      #   with:
-      #     builder: gcr.io/buildpacks/builder:latest
-      #     image: ${{ env.IMAGE_NAME }}
-      #     tag: ${{ env.TAG }}
-      # - name: List Docker Images
-      #   run: docker image ls
-      # - name: Set OCI Image reference
-      #   id: image_ref
-      #   run: |
-            
-      # - name: Run Trivy Vulnerability Scan
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     image-ref: ${{ steps.image_ref.outputs.image_ref}}
-      #     format: 'sarif'
-      #     output: 'trivy-results.sarif'
-      #     severity: 'CRITICAL,HIGH'
-      #     exit-code: '1'
-      # - name: Upload Trivy scan SARIF report
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   if: always()
-      #   with:
-      #     sarif_file: trivy-results.sarif
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install
+      - name: Code Vulnerability Check
+        uses: anchore/scan-action@v3
+        id: scan-build
+        with:  
+          path: "${{ github.workspace }}"
+          fail-build: true
+          severity-cutoff: "high"
+      - name: Upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan-build.outputs.sarif }}
+      - name: Build OCI Image with Buildpacks
+        uses: mamezou-tech/buildpacks-action@master
+        with:
+          builder: gcr.io/buildpacks/builder:latest
+          image: ${{ env.APP_NAME }}
+          tag: $SHORT_SHA
+      - name: List Docker Images
+        run: docker image ls
+      - name: Run Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ env.APP_NAME }}:$SHORT_SHA"
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+      - name: Upload Trivy scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
