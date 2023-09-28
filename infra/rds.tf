@@ -17,7 +17,8 @@ module "rds" {
   allocated_storage = 20
 
   db_name  = "tasks"
-  username = "postgres"
+  username = local.db_creds.username
+  password = local.db_creds.password
   port     = 5432
 
   multi_az     = false
@@ -56,4 +57,36 @@ module "security_group" {
 resource "aws_db_subnet_group" "database_subnet_group" {
   name       = "${local.name}-subnet-group"
   subnet_ids = module.vpc.private_subnets
+}
+
+resource "random_password" "db_password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "aws_secretmanager_secret" "db_secret" {
+  name = "postgres-secret"
+}
+
+resource "aws_secretmanager_secret_version" "db_secret_version" {
+  secret_id     = aws_secretmanager_secret.db_secret.id
+  secret_string = <<EOF
+  {
+    "username": "postgres",
+    "password": "${random_password.db_password.result}"
+  }
+  EOF
+}
+
+data "aws_secretsmanager_secret" "db_secret" {
+  arn = aws_secretmanager_secret.db_secret.arn
+}
+
+data "aws_secretsmanager_secret_version" "db_secret_version" {
+  secret_id = aws_secretmanager_secret.db_secret.id
+}
+
+locals {
+  db_creds = jsondecode(data.aws_secretsmanager_secret_version.db_secret_version.secret_string)
 }
