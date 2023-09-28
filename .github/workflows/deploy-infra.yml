@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'infra/**'
+      - '/.github/workflows/deploy-infra.yml'
     branches:
       - main
   workflow_dispatch:
@@ -21,7 +22,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      WORKING_DIR: .
+      WORKING_DIR: '/infra'
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was triggered by a ${{ github.event_name }} event."

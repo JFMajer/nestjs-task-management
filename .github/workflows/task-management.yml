@@ -9,6 +9,7 @@ on:
         - main
       paths-ignore:
         - 'infra/**'
+        - '.github/workflows/deploy-infra.yml'
     pull_request:
       types: [opened, synchronize, reopened]
   
