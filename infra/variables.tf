@@ -10,7 +10,7 @@ variable "vpc_cidr" {
 
 variable "cluster_name" {
   type    = string
-  default = "#{APP_NAME}#-eks"
+  default = "eks-cluster"
 }
 
 variable "cluster_version" {
