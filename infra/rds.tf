@@ -70,7 +70,7 @@ resource "aws_secretsmanager_secret" "db_secret" {
 }
 
 resource "aws_secretsmanager_secret_version" "db_secret_version" {
-  secret_id     = aws_secretmanager_secret.db_secret.id
+  secret_id     = aws_secretsmanager_secret.db_secret.id
   secret_string = <<EOF
   {
     "username": "postgres",
@@ -80,11 +80,11 @@ resource "aws_secretsmanager_secret_version" "db_secret_version" {
 }
 
 data "aws_secretsmanager_secret" "db_secret" {
-  arn = aws_secretmanager_secret.db_secret.arn
+  arn = aws_secretsmanager_secret.db_secret.arn
 }
 
 data "aws_secretsmanager_secret_version" "db_secret_version" {
-  secret_id = aws_secretmanager_secret.db_secret.id
+  secret_id = aws_secretsmanager_secret.db_secret.id
 }
 
 locals {
