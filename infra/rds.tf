@@ -15,7 +15,7 @@ module "rds" {
   allocated_storage = 20
 
   db_name     = "task_management"
-  db_username = "postgres"
+  username = "postgres"
   port        = 5432
 
   multi_az     = false
