@@ -21,8 +21,6 @@ module "vpc" {
   private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
   public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 4)]
 
-  create_database_subnet_group = true
-
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                    = 1

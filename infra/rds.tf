@@ -23,7 +23,7 @@ module "rds" {
   multi_az     = false
   storage_type = "gp3"
 
-  db_subnet_group_name   = module.vpc.database_subnet_group
+  db_subnet_group_name   = aws_db_subnet_group.database_subnet_group.name
   vpc_security_group_ids = [module.security_group.security_group_id]
 
 
@@ -51,4 +51,9 @@ module "security_group" {
   ]
 
   tags = local.tags
+}
+
+resource "aws_db_subnet_group" "database_subnet_group" {
+  name       = "${local.name}-subnet-group"
+  subnet_ids = module.vpc.private_subnets
 }
