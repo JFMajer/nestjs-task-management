@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Set image name and store in env variables
         run: |
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          echo 'SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)' >> $GITHUB_ENV
           echo $SHORT_SHA
       # - name: Checkout Code
       #   uses: actions/checkout@v4
