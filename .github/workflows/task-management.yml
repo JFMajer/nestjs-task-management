@@ -36,7 +36,7 @@ jobs:
           echo "IMAGE_NAME_WITH_TAG=${IMAGE_NAME_WITH_TAG}" >> $GITHUB_ENV
       - name: Output image name
         run: |
-          echo $IMAGE_NAME_WITH_TAG
+          echo "${{ env.APP_NAME }}:$SHORT_SHA"
       # - name: Checkout Code
       #   uses: actions/checkout@v4
       # - name: Set up Node
