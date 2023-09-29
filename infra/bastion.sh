@@ -2,7 +2,10 @@
 
 set -euo pipefail
 
-echo whoami
+current_user=$(whoami)
+echo "Current user is: $current_user"
+
+export HOME=$(eval echo "~$(whoami)")
 
 # update
 dnf update -y
