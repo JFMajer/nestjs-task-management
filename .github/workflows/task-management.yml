@@ -86,4 +86,5 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - name: Push to GH Registry
         run: |
-          docker push ghcr.io/${{ github.actor}}/${{ env.APP_NAME }}:${{ env.SHORT_SHA }}
+          DOCKER_USERNAME="$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')"
+          docker push ghcr.io/${DOCKER_USERNAME}/${{ env.APP_NAME }}:${{ env.SHORT_SHA }}
