@@ -19,14 +19,14 @@ module "rds" {
   db_name  = "tasks"
   username = "postgres"
   # password = local.db_creds.password
-  port     = 5432
+  port                        = 5432
   manage_master_user_password = true
 
-  multi_az     = false
-  storage_type = "gp3"
-  apply_immediately = true
+  multi_az            = false
+  storage_type        = "gp3"
+  apply_immediately   = true
   skip_final_snapshot = true
-  
+
   db_subnet_group_name   = aws_db_subnet_group.database_subnet_group.name
   vpc_security_group_ids = [module.security_group.security_group_id]
 

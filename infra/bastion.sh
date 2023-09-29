@@ -40,13 +40,6 @@ tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 
 sudo mv /tmp/eksctl /usr/local/bin
 
-# install kubectl
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
-echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
-kubectl version --short --client
-
 # install k9s
 curl -sS https://webinstall.dev/k9s | bash
 
@@ -57,10 +50,6 @@ chmod 700 get_helm.sh
 
 echo "helm version --short | cut -d + -f 1"
 
-# write kubectl configuration to file
-echo "aws eks update-kubeconfig --region eu-north-1 --name eks-cluster" > /tmp/kubeconfig.sh
-chmod +x /tmp/kubeconfig.sh
-
 # install psql
 dnf install -y postgresql
 psql --version
@@ -70,4 +59,15 @@ dnf install -y docker
 usermod -aG docker ssm-user
 systemctl start docker
 systemctl enable docker
+
+# install kubectl
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+kubectl version --short --client
+
+# write kubectl configuration to file
+echo "aws eks update-kubeconfig --region eu-north-1 --name eks-cluster" > /tmp/kubeconfig.sh
+chmod +x /tmp/kubeconfig.sh
 
