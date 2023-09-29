@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-echo "Starting Bastion host bootstrap"
-echo $HOME
+echo whoami
 
 # update
 dnf update -y
