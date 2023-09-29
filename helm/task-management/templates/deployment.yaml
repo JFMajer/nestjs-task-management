@@ -16,9 +16,14 @@ spec:
         spec:
             containers:
             - name: task-management
-            image: task-management:latest
+            image: 
             ports:
             - containerPort: 3000
             env:
               - name: DB_HOST
                 value: 
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: db-password
+                    key: password

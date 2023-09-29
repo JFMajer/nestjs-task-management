@@ -167,3 +167,34 @@ resource "helm_release" "ebs_csi_driver" {
   repository = "https://charts.deliveryhero.io/"
   chart      = "aws-ebs-csi-driver"
 }
+
+resource "kubernetes_namespace" "loki" {
+  metadata {
+    name = "loki"
+  }
+}
+
+resource "helm_release" "loki" {
+  name = "loki"
+  repository = "https://grafana.github.io/helm-charts"
+  chart = "loki-stack"
+  namespace = kubernetes_namespace.loki.metadata[0].name
+
+  set {
+    name = "promtail.enabled"
+    value = "true"
+  }
+
+  set {
+    name = "grafana.enabled"
+    value = "true"
+  }
+}
+module "eks-load-balancer-controller" {
+  source  = "lablabs/eks-load-balancer-controller/aws"
+  version = "1.2.0"
+  
+  cluster_name = module.eks.cluster_name
+  cluster_oidc_issuer_url = module.eks.oidc_provider_arn
+  cluster_oidc_issuer_client_id = module.eks.oidc_provider_arn
+}
