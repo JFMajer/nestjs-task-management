@@ -75,3 +75,4 @@ kubectl version --short --client
 echo "aws eks update-kubeconfig --region eu-north-1 --name eks-cluster" > /tmp/kubeconfig.sh
 chmod +x /tmp/kubeconfig.sh
 
+
