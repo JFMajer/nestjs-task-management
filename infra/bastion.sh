@@ -1,13 +1,18 @@
 #!/bin/bash
 
+
+
 # update
 yum update -y
 
-#install jq
+# install jq
 yum install -y jq
 
-#install git
+# install git
 yum install -y git
+
+# install openssl
+yum install -y openssl
 
 # enable ssm agent
 echo "export AWS_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)" >> /etc/bashrc
@@ -44,3 +49,14 @@ kubectl version --short --client
 
 # install k9s
 curl -sS https://webinstall.dev/k9s | bash
+
+# install helm
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+
+echo "helm version --short | cut -d + -f 1"
+
+# write kubectl configuration to file
+echo "aws eks update-kubeconfig --region eu-north-1 --name eks-cluster" > /tmp/kubeconfig.sh
+chmod +x /tmp/kubeconfig.sh

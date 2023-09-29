@@ -66,12 +66,12 @@ resource "random_password" "db_password" {
   override_special = "_%@"
 }
 
-resource "aws_secretsmanager_secret" "db_secret" {
+resource "aws_secretsmanager_secret" "postgres_secret" {
   name = "postgres-secret"
 }
 
-resource "aws_secretsmanager_secret_version" "db_secret_version" {
-  secret_id     = aws_secretsmanager_secret.db_secret.id
+resource "aws_secretsmanager_secret_version" "postgres_secret_version" {
+  secret_id     = aws_secretsmanager_secret.postgres_secret.id
   secret_string = <<EOF
   {
     "username": "postgres",
@@ -80,14 +80,14 @@ resource "aws_secretsmanager_secret_version" "db_secret_version" {
   EOF
 }
 
-data "aws_secretsmanager_secret" "db_secret" {
-  arn = aws_secretsmanager_secret.db_secret.arn
+data "aws_secretsmanager_secret" "postgres_secret" {
+  arn = aws_secretsmanager_secret.postgres_secret.arn
 }
 
-data "aws_secretsmanager_secret_version" "db_secret_version" {
-  secret_id = aws_secretsmanager_secret.db_secret.id
+data "aws_secretsmanager_secret_version" "postgres_secret_version" {
+  secret_id = aws_secretsmanager_secret.postgres_secret.id
 }
 
 locals {
-  db_creds = jsondecode(data.aws_secretsmanager_secret_version.db_secret_version.secret_string)
+  db_creds = jsondecode(data.aws_secretsmanager_secret_version.postgres_secret_version.secret_string)
 }

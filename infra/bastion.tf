@@ -4,7 +4,7 @@ data "aws_ami" "amazon_linux" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-kernel-*-x86_64-gp2"]
+    values = ["al2023-ami-*-x86_64"]
   }
 }
 
@@ -42,7 +42,7 @@ module "asg" {
       device_name = "/dev/sda1"
       ebs = {
         volume_size = 15
-        volume_type = "gp2"
+        volume_type = "gp3"
       }
     }
   ]
