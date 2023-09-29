@@ -24,9 +24,6 @@ provider "helm" {
   }
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = var.cluster_name
-}
 data "aws_ami" "eks_default" {
   most_recent = true
   owners      = ["amazon"]
