@@ -61,7 +61,6 @@ psql --version
 
 # install docker
 dnf install -y docker
-usermod -aG docker ssm-user
 systemctl start docker
 systemctl enable docker
 
