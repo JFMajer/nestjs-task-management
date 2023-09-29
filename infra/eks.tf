@@ -25,7 +25,7 @@ provider "helm" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
+  name = var.cluster_name
 }
 data "aws_ami" "eks_default" {
   most_recent = true
