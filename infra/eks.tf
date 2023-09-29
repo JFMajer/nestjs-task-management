@@ -10,16 +10,21 @@ provider "kubernetes" {
   }
 }
 
-data "aws_ami" "eks_default_bottlerocket" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["bottlerocket-aws-k8s-${var.cluster_version}-x86_64-*"]
+provider "helm" {
+  kubernetes {
+    host = data.aws_eks_cluster.this.endpoint
+    token = data.aws_eks_cluster_auth.this.token
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority.0.data)
   }
 }
 
+data "aws_eks_cluster" "this" {
+  name = module.eks.eks_cluster_id
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.eks_cluster_id
+}
 data "aws_ami" "eks_default" {
   most_recent = true
   owners      = ["amazon"]
@@ -89,7 +94,7 @@ module "eks" {
       name                   = "node-group-AL2"
       name                   = "node-group-1"
       capacity_type          = "SPOT"
-      instance_types         = ["t3.small", "t3.medium", "t3.large"]
+      instance_types         = ["t3.medium", "t3.large"]
 
       ami_id                     = data.aws_ami.eks_default.image_id
       enable_bootstrap_user_data = true

@@ -1,28 +1,28 @@
 #!/bin/bash
 
-
+set -euo pipefail
 
 # update
-yum update -y
+dnf update -y
 
 # install jq
-yum install -y jq
+dnf install -y jq
 
 # install git
-yum install -y git
+dnf install -y git
 
 # install openssl
-yum install -y openssl
+dnf install -y openssl
 
 # enable ssm agent
 echo "export AWS_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)" >> /etc/bashrc
 echo "export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)" >> /etc/bashrc
-yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+dnf install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
 systemctl enable amazon-ssm-agent
 systemctl start amazon-ssm-agent
 
 # install aws cli
-yum install -y unzip
+dnf install -y unzip
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip && ./aws/install
 
@@ -60,3 +60,14 @@ echo "helm version --short | cut -d + -f 1"
 # write kubectl configuration to file
 echo "aws eks update-kubeconfig --region eu-north-1 --name eks-cluster" > /tmp/kubeconfig.sh
 chmod +x /tmp/kubeconfig.sh
+
+# install psql
+dnf install -y postgresql
+psql --version
+
+# install docker
+dnf install -y docker
+usermod -aG docker ssm-user
+systemctl start docker
+systemctl enable docker
+
