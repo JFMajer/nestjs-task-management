@@ -68,6 +68,7 @@ resource "random_password" "db_password" {
 
 resource "aws_secretsmanager_secret" "postgres_secret" {
   name = "postgres-secret"
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "postgres_secret_version" {

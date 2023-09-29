@@ -4,7 +4,7 @@ data "aws_ami" "amazon_linux" {
 
   filter {
     name   = "name"
-    values = ["al2023-ami-*-x86_64"]
+    values = ["al2023-ami-2023*-*-x86_64"]
   }
 }
 
@@ -35,17 +35,6 @@ module "asg" {
   security_groups             = [aws_security_group.jump_host_sg.id]
   instance_type               = "t3.small"
   instance_name               = "${var.app_name}-bastion"
-
-
-  block_device_mappings = [
-    {
-      device_name = "/dev/sda1"
-      ebs = {
-        volume_size = 15
-        volume_type = "gp3"
-      }
-    }
-  ]
 
   instance_market_options = {
     market_type = "spot"
