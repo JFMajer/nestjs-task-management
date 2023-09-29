@@ -5,5 +5,5 @@ output "rds_dns_name" {
 
 output "rds_secret_arn" {
   description = "The ARN of the RDS secret"
-  value       = module.rds.db_secret_arn
+  value       = module.rds.db_instance_master_user_secret_arn
 }
