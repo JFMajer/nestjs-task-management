@@ -87,4 +87,7 @@ jobs:
       - name: Push to GH Registry
         run: |
           DOCKER_USERNAME="$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')"
-          docker push ghcr.io/${DOCKER_USERNAME}/${{ env.APP_NAME }}:${{ env.SHORT_SHA }}
+          DOCKER_IMAGE: ghcr.io/${{ github.actor }}/${{ env.APP_NAME }}:${{ env.SHORT_SHA }}
+          docker tag ${{ env.APP_NAME }}:${{ env.SHORT_SHA }} $DOCKER_IMAGE
+          docker image ls
+          docker push $DOCKER_IMAGE
