@@ -17,7 +17,7 @@ module "rds" {
   allocated_storage = 20
 
   db_name  = "tasks"
-  username = postgres
+  username = "postgres"
   # password = local.db_creds.password
   port     = 5432
   manage_master_user_password = true
