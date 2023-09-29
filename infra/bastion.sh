@@ -56,7 +56,7 @@ chmod 700 get_helm.sh
 echo "helm version --short | cut -d + -f 1"
 
 # install psql
-dnf install -y postgresql
+dnf install -y postgresql15
 psql --version
 
 # install docker
