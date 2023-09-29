@@ -20,6 +20,7 @@ module "rds" {
   username = local.db_creds.username
   password = local.db_creds.password
   port     = 5432
+  manage_master_user_password = false
 
   multi_az     = false
   storage_type = "gp3"
