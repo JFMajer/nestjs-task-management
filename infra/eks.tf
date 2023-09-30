@@ -193,7 +193,7 @@ resource "helm_release" "task-management" {
 
   set {
     name  = "database.host"
-    value = module.rds.db_instance_endpoint
+    value = split(":", module.rds.db_instance_endpoint)[0]
   }
 
   set {
