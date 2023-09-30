@@ -1,20 +1,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-tasks
-  namespace: default
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+  name: ingress-tasks
+  namespace: default
 spec:
   ingressClassName: alb
   rules:
-    - http:
-        paths:
-          - path: /*
-            pathType: Prefix
-            backend:
-              service:
-                name: task-service
-                port:
-                  number: 80
+  - http:
+      paths:
+      - backend:
+          service:
+            name: task-service
+            port:
+              number: 80
+        path: /*
+        pathType: Prefix
