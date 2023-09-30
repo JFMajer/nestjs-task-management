@@ -87,15 +87,13 @@ jobs:
       - name: Push to GH Registry
         run: |
           DOCKER_USERNAME="$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')"
-          DOCKER_IMAGE=ghcr.io/$DOCKER_USERNAME/${{ env.APP_NAME }}:${{ env.SHORT_SHA }} >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=ghcr.io/$DOCKER_USERNAME/${{ env.APP_NAME }}:${{ env.SHORT_SHA }}" >> $GITHUB_ENV
           docker tag ${{ env.APP_NAME }}:${{ env.SHORT_SHA }} $DOCKER_IMAGE
           docker image ls
           docker push $DOCKER_IMAGE
       - name: Add image to helm values
-        run : |
-          DOCKER_USERNAME="$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')"
-          DOCKER_IMAGE=ghcr.io/$DOCKER_USERNAME/${{ env.APP_NAME }}:${{ env.SHORT_SHA }} 
-          sed -i "s#image:.*#image: ${{ env.DOCKER_IMAGE }}#" helm/task-management/values.yaml
+        run : | 
+          sed -i "s#image:.*#image: $DOCKER_IMAGE#" helm/task-management/values.yaml
           cat helm/task-management/values.yaml
       - name: Upload values.yaml
         uses: actions/upload-artifact@v3
