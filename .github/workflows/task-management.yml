@@ -94,6 +94,7 @@ jobs:
       - name: Add image to helm values
         run : |
           sed -i "s#image:.*#image: ${{ env.DOCKER_IMAGE }}#" helm/task-management/values.yaml
+          cat helm/task-management/values.yaml
       - name: Upload values.yaml
         uses: actions/upload-artifact@v3
         with:
