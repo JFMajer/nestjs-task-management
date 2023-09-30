@@ -92,6 +92,8 @@ jobs:
           docker image ls
           docker push $DOCKER_IMAGE
       - name: Add image to helm values
+        env:
+          DOCKER_IMAGE: $DOCKER_IMAGE
         run : |
           echo $DOCKER_IMAGE
           sed -i "s#image:.*#image: $DOCKER_IMAGE#" helm/task-management/values.yaml
