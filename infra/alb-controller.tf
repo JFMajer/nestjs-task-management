@@ -11,7 +11,7 @@
 # }
 
 resource "aws_iam_policy" "alb_controller_policy" {
-    name        = "alb-controller-policy"
-    description = "Policy for ALB Controller"
-    policy      = file("iam_policy.json")
+  name        = "alb-controller-policy"
+  description = "Policy for ALB Controller"
+  policy      = file("iam_policy.json")
 }
