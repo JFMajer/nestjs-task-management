@@ -93,4 +93,11 @@ jobs:
           docker push $DOCKER_IMAGE
       - name: Add image to helm values
         run : |
+          ls -la
           sed -i "s/image:.*/image: $DOCKER_IMAGE/g" helm/task-management/templates/values.yaml
+      - name: Upload values.yaml
+        uses: actions/upload-artifact@v3
+        with:
+          name: values.yaml
+          path: helm/task-management/templates/values.yaml
+          retention-days: 2
