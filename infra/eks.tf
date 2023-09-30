@@ -193,7 +193,7 @@ resource "helm_release" "task-management" {
 
   set {
     name  = "database.host"
-    value = module.rds.rds_address
+    value = module.rds.db_instance_endpoint
   }
 
   set {
