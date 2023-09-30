@@ -14,9 +14,6 @@ on:
     pull_request:
       types: [opened, synchronize, reopened]
   
-env:
-  APP_NAME: task-management
-
 
 #############################################################
 # Specifies jobs to run
@@ -29,6 +26,9 @@ jobs:
       contents: read
       packages: write
       security-events: write
+    environment: dev
+    env:
+      APP_NAME: ${{ vars.APP_NAME}}
     steps:
       - name: Set image tag
         run: |
@@ -87,7 +87,10 @@ jobs:
       - name: Push to GH Registry
         run: |
           DOCKER_USERNAME="$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')"
-          DOCKER_IMAGE=ghcr.io/$DOCKER_USERNAME/${{ env.APP_NAME }}:${{ env.SHORT_SHA }}
+          DOCKER_IMAGE=ghcr.io/$DOCKER_USERNAME/${{ env.APP_NAME }}:${{ env.SHORT_SHA }} >> $GITHUB_ENV
           docker tag ${{ env.APP_NAME }}:${{ env.SHORT_SHA }} $DOCKER_IMAGE
           docker image ls
           docker push $DOCKER_IMAGE
+      - name: Add image to helm values
+        run : |
+          sed -i "s/image:.*/image: $DOCKER_IMAGE/g" helm/task-management/templates/values.yaml

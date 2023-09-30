@@ -17,3 +17,8 @@ variable "cluster_version" {
   type    = string
   default = "1.27"
 }
+
+variable "db_password" {
+  type    = string
+  default = "#{DB_PASSWORD}#"
+}

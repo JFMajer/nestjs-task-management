@@ -16,14 +16,11 @@ spec:
         spec:
             containers:
             - name: task-management
-            image: 
+            image: {{ .Values.image }}
             ports:
             - containerPort: 3000
             env:
               - name: DB_HOST
-                value: 
+                value: {{ .Values.database.host }}
               - name: DB_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: db-password
-                    key: password
+                value: {{ .Values.database.password }}

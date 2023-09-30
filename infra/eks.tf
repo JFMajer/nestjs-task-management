@@ -172,26 +172,32 @@ resource "kubernetes_namespace" "loki" {
 }
 
 resource "helm_release" "loki" {
-  name = "loki"
+  name       = "loki"
   repository = "https://grafana.github.io/helm-charts"
-  chart = "loki-stack"
-  namespace = kubernetes_namespace.loki.metadata[0].name
+  chart      = "loki-stack"
+  namespace  = kubernetes_namespace.loki.metadata[0].name
 
   set {
-    name = "promtail.enabled"
+    name  = "promtail.enabled"
     value = "true"
   }
 
   set {
-    name = "grafana.enabled"
+    name  = "grafana.enabled"
     value = "true"
   }
 }
-module "eks-load-balancer-controller" {
-  source  = "lablabs/eks-load-balancer-controller/aws"
-  version = "1.2.0"
-  
-  cluster_name = module.eks.cluster_name
-  cluster_identity_oidc_issuer_arn = module.eks.oidc_provider_arn
-  cluster_identity_oidc_issuer = module.eks.oidc_provider_arn
+resource "helm_release" "task-management" {
+  name  = "task-management"
+  chart = "${path.module}/helm/task-management/task-management-0.1.0.tgz"
+
+  set {
+    name  = "database.host"
+    value = module.rds.rds_address
+  }
+
+  set {
+    name  = "database.password"
+    value = var.db_password
+  }
 }
