@@ -3,4 +3,4 @@ database:
   host: ""
   password: ""
 
-image: ghcr.io/jfmajer/task-management:0032158
+image: ghcr.io/jfmajer/task-management:67c72db

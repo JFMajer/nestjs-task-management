@@ -189,7 +189,7 @@ resource "helm_release" "loki" {
 }
 resource "helm_release" "task-management" {
   name  = "task-management"
-  chart = "../${path.module}/helm/task-management/task-management-0.1.0.tgz"
+  chart = "../${path.module}/helm/task-management/task-management-0.0.1.tgz"
 
   set {
     name  = "database.host"
