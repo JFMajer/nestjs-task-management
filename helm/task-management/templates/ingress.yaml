@@ -16,5 +16,5 @@ spec:
             name: task-service
             port:
               number: 80
-        path: /*
+        path: /
         pathType: Prefix
