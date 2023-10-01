@@ -4,7 +4,7 @@ resource "aws_iam_policy" "alb_controller_policy" {
   policy      = file("iam_policy.json")
 }
 
-resource "aws_iam_policy_document" "load-balancer-role-trust-policy" {
+data "aws_iam_policy_document" "load-balancer-role-trust-policy" {
     statement {
         effect = "Allow"
         actions = [
@@ -16,14 +16,14 @@ resource "aws_iam_policy_document" "load-balancer-role-trust-policy" {
         }
         condition {
             test = "StringEquals"
-            variable = "oidc.eks.eu-north-1.amazonaws.com/id/${module.eks.identity[0].oidc[0].issuer}:aud"
+            variable = "oidc.eks.eu-north-1.amazonaws.com/id/${module.eks.oidc_provider}:aud"
             values = [
                 "sts.amazonaws.com"
             ]
         }
         condition {
             test = "StringEquals"
-            variable = "oidc.eks.eu-north-1.amazonaws.com/id/${module.eks.identity[0].oidc[0].issuer}:sub"
+            variable = "oidc.eks.eu-north-1.amazonaws.com/id/${module.eks.oidc_provider}:sub"
             values = [
                 "system:serviceaccount:kube-system:aws-load-balancer-controller"
             ]

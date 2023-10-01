@@ -24,5 +24,5 @@ output "eks_cluster_id" {
 }
 
 output "identity-oidc-issuer" {
-  value = module.eks.identity[0].oidc[0].issuer
+  value = module.eks.oidc_provider
 }
