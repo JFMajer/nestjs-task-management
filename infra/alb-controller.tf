@@ -31,7 +31,7 @@ resource "aws_iam_policy_document" "load-balancer-role-trust-policy" {
     }
 } 
 
-resource "iaws_iam_role" "load-balancer-role" {
+resource "aws_iam_role" "load-balancer-role" {
     name = "aws-load-balancer-controller"
     assume_role_policy = aws_iam_policy_document.load-balancer-role-trust-policy.json
 }
