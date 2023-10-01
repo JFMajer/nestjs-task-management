@@ -16,14 +16,14 @@ data "aws_iam_policy_document" "load-balancer-role-trust-policy" {
     }
     condition {
       test     = "StringEquals"
-      variable = "oidc.eks.eu-north-1.amazonaws.com/id/${module.eks.oidc_provider}:aud"
+      variable = "${module.eks.oidc_provider}:aud"
       values = [
         "sts.amazonaws.com"
       ]
     }
     condition {
       test     = "StringEquals"
-      variable = "oidc.eks.eu-north-1.amazonaws.com/id/${module.eks.oidc_provider}:sub"
+      variable = "${module.eks.oidc_provider}:sub"
       values = [
         "system:serviceaccount:kube-system:aws-load-balancer-controller"
       ]
