@@ -11,10 +11,9 @@ spec:
   rules:
   - http:
       paths:
-      - backend:
+      - path: /
+        backend:
           service:
             name: task-service
             port:
               number: 80
-        path: /
-        pathType: Prefix
