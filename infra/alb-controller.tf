@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "load-balancer-role-trust-policy" {
   statement {
     effect = "Allow"
     actions = [
-      "ats:AssumeRoleWithWebIdentity"
+      "sts:AssumeRoleWithWebIdentity"
     ]
     principals {
       type        = "Federated"
