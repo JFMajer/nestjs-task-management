@@ -43,7 +43,9 @@ export class TasksController {
   // create task
   @Post()
   createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
-    this.logger.verbose(`Creating task with title ${createTaskDto.title}`);
+    this.logger.verbose(
+      `Creating task with data ${JSON.stringify(createTaskDto)}`,
+    );
     return this.tasksService.createTask(createTaskDto);
   }
 

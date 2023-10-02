@@ -7,9 +7,11 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Task } from './dto/task.entity';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class TasksService {
+  private logger = new Logger('TasksService');
   constructor(
     @InjectRepository(Task) private taskRepository: Repository<Task>,
   ) {}
@@ -17,6 +19,7 @@ export class TasksService {
   async findAll(): Promise<Task[]> {
     const tasks = await this.taskRepository.find();
     if (tasks.length === 0) {
+      this.logger.error('No tasks in database');
       throw new NotFoundException('No tasks in database');
     }
     return tasks;
@@ -27,6 +30,7 @@ export class TasksService {
       where: { id },
     });
     if (!taskToBeReturned) {
+      this.logger.error(`Task with ID "${id}" not found`);
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
     return taskToBeReturned;
