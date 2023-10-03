@@ -1,6 +1,7 @@
 ################################################################################
 # EKS Cluster
 ################################################################################
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.0"
@@ -57,7 +58,6 @@ module "eks" {
     default_node_group = {
       create_launch_template = false
       launch_template_name   = ""
-      name                   = "node-group-AL2"
       name                   = "node-group-1"
       capacity_type          = "SPOT"
       instance_types         = ["t3.medium", "t3.large"]
@@ -94,6 +94,7 @@ module "eks" {
         "nodegroup-role"      = "worker"
         "instance-life-cycle" = "Ec2Spot"
         "Name"                = "node-group-1"
+        "OS"                  = "AmazonLinux2"
       }
     }
 
