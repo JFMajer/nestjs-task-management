@@ -70,6 +70,7 @@ jobs:
         run: terraform output -json
   
   check-auth-configmap:
+    if: ${{ github.event.inputs.destruction != 'true' }}
     needs: deploy-infra
     permissions:
       id-token: write
