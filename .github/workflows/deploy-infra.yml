@@ -52,8 +52,8 @@ jobs:
       - name: Terraform Init
         working-directory: ${{ env.WORKING_DIR }}
         run: terraform init
-      # - name: Unlock state
-      #   run: terraform force-unlock -force "e8e74abd-9b78-a47a-f069-76759e2039ba"
+      - name: Unlock state
+        run: terraform force-unlock -force "c865c997-8364-3547-bd55-b023698d69bb"
       - name: Terraform Plan
         working-directory: ${{ env.WORKING_DIR }}
         run: terraform plan -out=plan.out
