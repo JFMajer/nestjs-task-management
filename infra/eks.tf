@@ -87,7 +87,8 @@ module "eks" {
         Purpose = "Protector of the kubelet"
       }
       iam_role_additional_policies = [
-        "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+        "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
       ]
 
       tags = {
