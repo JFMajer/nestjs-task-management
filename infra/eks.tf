@@ -134,28 +134,6 @@ resource "helm_release" "ebs_csi_driver" {
   chart      = "aws-ebs-csi-driver"
 }
 
-# resource "kubernetes_namespace" "loki" {
-#   metadata {
-#     name = "loki"
-#   }
-# }
-
-# resource "helm_release" "loki" {
-#   name       = "loki"
-#   repository = "https://grafana.github.io/helm-charts"
-#   chart      = "loki-stack"
-#   namespace  = kubernetes_namespace.loki.metadata[0].name
-
-#   set {
-#     name  = "promtail.enabled"
-#     value = "true"
-#   }
-
-#   set {
-#     name  = "grafana.enabled"
-#     value = "true"
-#   }
-# }
 resource "helm_release" "task-management" {
   name  = "task-management"
   chart = "../${path.module}/helm/task-management/task-management-0.0.2.tgz"
