@@ -75,4 +75,7 @@ kubectl version --short --client
 echo "aws eks update-kubeconfig --region eu-north-1 --name eks-cluster" > /tmp/kubeconfig.sh
 chmod +x /tmp/kubeconfig.sh
 
+# install k9s
+curl -sS https://webinstall.dev/k9s | bash
+
 
