@@ -60,7 +60,7 @@ module "eks" {
       launch_template_name   = ""
       name                   = "node-group-1"
       capacity_type          = "SPOT"
-      instance_types         = ["t3.medium", "t3.large"]
+      instance_types         = ["r7a.medium", "r7a.large", "m7a.medium", "m7a.large", "m7a.xlarge"]
 
       ami_id                     = data.aws_ami.eks_default.image_id
       enable_bootstrap_user_data = true
@@ -76,7 +76,7 @@ module "eks" {
       EOT
 
       min_size     = 1
-      max_size     = 3
+      max_size     = 6
       desired_size = 2
 
       create_iam_role          = true
@@ -90,12 +90,18 @@ module "eks" {
         "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
         "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
       ]
+      labels = {
+        role = "worker"
+      }
 
       tags = {
-        "nodegroup-role"      = "worker"
-        "instance-life-cycle" = "Ec2Spot"
-        "Name"                = "node-group-1"
-        "OS"                  = "AmazonLinux2"
+        "nodegroup-role"                                     = "worker"
+        "instance-life-cycle"                                = "Ec2Spot"
+        "Name"                                               = "node-group-1"
+        "OS"                                                 = "AmazonLinux2"
+        "k8s.io/cluster-autoscaler/enabled"                  = "true"
+        "k8s.io/cluster-autoscaler/${var.cluster_name}"      = "owned"
+        "k8s.io/cluster-autoscaler/node-template/label/role" = "worker"
       }
     }
 
