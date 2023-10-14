@@ -63,8 +63,6 @@ module "eks" {
       instance_types         = ["r7a.medium", "r7a.large", "m7a.medium", "m7a.large", "m7a.xlarge"]
 
       ami_id                     = data.aws_ami.eks_default.image_id
-      enable_bootstrap_user_data = true
-      bootstrap_extra_args       = "--container-runtime containerd --kubelet-extra-args '--max-pods=20'"
 
       pre_bootstrap_user_data = <<-EOT
       export CONTAINER_RUNTIME="containerd"
