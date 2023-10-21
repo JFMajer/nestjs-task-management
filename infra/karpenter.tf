@@ -68,8 +68,8 @@ resource "kubectl_manifest" "karpenter_provisioner" {
           values: ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
       limits:
         resources:
-          cpu: 16
-          memory: 128Gi
+          cpu: "4000m"
+          memory: "32Gi"
       providerRef:
         name: default
       ttlSecondsAfterEmpty: 30
