@@ -64,11 +64,11 @@ module "eks" {
       ]
     }
   ]
-  
-  tags = {
-      "karpenter.sh/discovery" = var.cluster_name
-    }
-  
+
+  node_security_group_tags = {
+    "karpenter.sh/discovery" = var.cluster_name
+  }
+
 
   eks_managed_node_groups = {
     default_node_group = {
