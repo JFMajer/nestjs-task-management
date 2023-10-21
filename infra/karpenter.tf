@@ -7,8 +7,6 @@ module "karpenter" {
   irsa_namespace_service_accounts = [
     "karpenter:karpenter",
   ]
-
-  depends_on = [ module.eks ]
 }
 
 resource "helm_release" "karpenter" {
@@ -19,6 +17,8 @@ resource "helm_release" "karpenter" {
   repository = "oci://public.ecr.aws/karpenter"
   chart      = "karpenter"
   version    = "v0.19.1"
+
+  depends_on = [ module.eks ]
 
   set {
     name  = "setting.aws.clusterName"
