@@ -72,7 +72,7 @@ module "eks" {
       launch_template_name   = ""
       name                   = "node-group-1"
       capacity_type          = "SPOT"
-      instance_types         = ["t3.medium"]
+      instance_types         = ["c7i.xlarge"]
 
       ami_id = data.aws_ami.eks_default.image_id
 
