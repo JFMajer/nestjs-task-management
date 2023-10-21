@@ -1,7 +1,11 @@
 ################################################################################
 # EKS Cluster
 ################################################################################
-
+locals {
+  tags = {
+    Test = "true"
+  }
+}
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.0"
@@ -50,9 +54,23 @@ module "eks" {
       rolearn  = aws_iam_role.jump_host.arn
       username = "jump_host"
       groups   = ["system:masters"]
+    },
+    {
+      rolearn  = module.karpenter.role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
     }
   ]
 
+  tags = merge(
+    local.tags,
+    {
+      "karpenter.sh/discovery" = var.cluster_name
+    }
+  )
 
   eks_managed_node_groups = {
     default_node_group = {
@@ -62,7 +80,7 @@ module "eks" {
       capacity_type          = "SPOT"
       instance_types         = ["r7a.medium", "r7a.large", "m7a.medium", "m7a.large", "m7a.xlarge"]
 
-      ami_id                     = data.aws_ami.eks_default.image_id
+      ami_id = data.aws_ami.eks_default.image_id
 
       pre_bootstrap_user_data = <<-EOT
       export CONTAINER_RUNTIME="containerd"
@@ -75,7 +93,7 @@ module "eks" {
 
       min_size     = 1
       max_size     = 6
-      desired_size = 2
+      desired_size = 1
 
       create_iam_role          = true
       iam_role_name            = "eks-managed-node-group-role"
