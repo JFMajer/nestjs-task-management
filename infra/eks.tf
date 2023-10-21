@@ -6,8 +6,6 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.0"
 
-  depends_on = [ module.vpc ]
-
   # define which logs to enable
   cluster_enabled_log_types = [
     "api",
