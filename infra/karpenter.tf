@@ -18,7 +18,7 @@ resource "helm_release" "karpenter" {
   chart      = "karpenter"
   version    = "v0.19.1"
 
-  depends_on = [ module.eks ]
+  depends_on = [ module.aws_load_balancer_controller ]
 
   set {
     name  = "setting.aws.clusterName"
