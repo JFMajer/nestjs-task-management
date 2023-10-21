@@ -54,9 +54,9 @@ resource "kubectl_manifest" "karpenter_provisioner" {
       name: default
     spec:
       requirements:
-        - key: karpenter.k8s.aws/instance-family
+        - key: karpenter.k8s.aws/instance-category
           operator: In
-          values: ["m6i", "m7i", "r6i", "r7i", "c6i", "c7i"]
+          values: ["c", "m", "r"]
         - key: karpenter.k8s.aws/instance-size
           operator: In
           values: ["medium", "large", "xlarge", "2xlarge"]
@@ -68,7 +68,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
           values: ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
       limits:
         resources:
-          cpu: 4000
+          cpu: 16
           memory: 128Gi
       providerRef:
         name: default
