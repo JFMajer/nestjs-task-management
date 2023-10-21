@@ -149,14 +149,14 @@ resource "helm_release" "ebs_csi_driver" {
   repository = "https://charts.deliveryhero.io/"
   chart      = "aws-ebs-csi-driver"
 
-  depends_on = [ module.karpenter ]
+  depends_on = [ module.eks ]
 }
 
 resource "helm_release" "task-management" {
   name  = "task-management"
   chart = "../${path.module}/helm/task-management/task-management-0.0.2.tgz"
 
-  depends_on = [ module.karpenter ]
+  depends_on = [ module.eks ]
 
   set {
     name  = "database.host"
