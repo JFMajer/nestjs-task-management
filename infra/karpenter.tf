@@ -4,6 +4,11 @@ module "karpenter" {
 
   cluster_name           = module.eks.cluster_id
   irsa_oidc_provider_arn = module.eks.oidc_provider_arn
+  irsa_namespace_service_accounts = [
+    "karpenter:karpenter",
+  ]
+
+  depends_on = [ module.eks ]
 }
 
 resource "helm_release" "karpenter" {
