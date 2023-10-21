@@ -56,7 +56,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
       requirements:
         - key: karpenter.k8s.aws/instance-family
           operator: In
-          values: ["r7a", "m7a", "c6a"]
+          values: ["m6i", "m7i", "r6i", "r7i", "c6i", "c7i"]
         - key: karpenter.k8s.aws/instance-size
           operator: In
           values: ["medium", "large", "xlarge", "2xlarge"]
