@@ -64,13 +64,11 @@ module "eks" {
       ]
     }
   ]
-
-  tags = merge(
-    local.tags,
-    {
+  
+  tags = {
       "karpenter.sh/discovery" = var.cluster_name
     }
-  )
+  
 
   eks_managed_node_groups = {
     default_node_group = {
