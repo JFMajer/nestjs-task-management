@@ -12,16 +12,6 @@ metadata:
     metadata:
       labels:
         app: task-management
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: provisionedBy
-                operator: In
-                values:
-                - karpenter
       containers:
       - name: task-management
         image: {{ .Values.image }}
@@ -38,4 +28,14 @@ metadata:
             memory: "1Gi"
           limits:
             memory: "1Gi"
+          spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: provisionedBy
+                operator: In
+                values:
+                - karpenter
 
