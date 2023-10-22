@@ -60,7 +60,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
         run: | 
           terraform state list
-          terraform state rm helm_release.aws_load_balancer_controller
       - name: Terraform Plan
         working-directory: ${{ env.WORKING_DIR }}
         run: terraform plan -out=plan.out
