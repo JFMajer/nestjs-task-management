@@ -40,10 +40,10 @@ module "eks" {
 
   manage_aws_auth_configmap = true
 
-  eks_managed_node_group_defaults = {
-    # ami_type                   = "AL2_x86_64"
-    iam_role_attach_cni_policy = true
-  }
+  # eks_managed_node_group_defaults = {
+  #   # ami_type                   = "AL2_x86_64"
+  #   iam_role_attach_cni_policy = true
+  # }
 
   aws_auth_roles = [
     {
@@ -66,56 +66,56 @@ module "eks" {
   }
 
 
-  eks_managed_node_groups = {
-    default_node_group = {
-      create_launch_template = false
-      launch_template_name   = ""
-      name                   = "node-group-1"
-      capacity_type          = "SPOT"
-      instance_types         = ["c7i.xlarge"]
+  # eks_managed_node_groups = {
+  #   default_node_group = {
+  #     create_launch_template = false
+  #     launch_template_name   = ""
+  #     name                   = "node-group-1"
+  #     capacity_type          = "SPOT"
+  #     instance_types         = ["c7i.xlarge"]
 
-      ami_id = data.aws_ami.eks_default.image_id
+  #     ami_id = data.aws_ami.eks_default.image_id
 
-      pre_bootstrap_user_data = <<-EOT
-      export CONTAINER_RUNTIME="containerd"
-      export USE_MAX_PODS=false
-      EOT
+  #     pre_bootstrap_user_data = <<-EOT
+  #     export CONTAINER_RUNTIME="containerd"
+  #     export USE_MAX_PODS=false
+  #     EOT
 
-      post_bootstrap_user_data = <<-EOT
-      echo "you are free little kubelet!"
-      EOT
+  #     post_bootstrap_user_data = <<-EOT
+  #     echo "you are free little kubelet!"
+  #     EOT
 
-      min_size     = 1
-      max_size     = 6
-      desired_size = 1
+  #     min_size     = 1
+  #     max_size     = 6
+  #     desired_size = 1
 
-      create_iam_role          = true
-      iam_role_name            = "eks-managed-node-group-role"
-      iam_role_use_name_prefix = false
-      iam_role_description     = "EKS managed node group role"
-      iam_role_tags = {
-        Purpose = "Protector of the kubelet"
-      }
-      iam_role_additional_policies = [
-        "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-        "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
-      ]
-      labels = {
-        role = "worker"
-      }
+  #     create_iam_role          = true
+  #     iam_role_name            = "eks-managed-node-group-role"
+  #     iam_role_use_name_prefix = false
+  #     iam_role_description     = "EKS managed node group role"
+  #     iam_role_tags = {
+  #       Purpose = "Protector of the kubelet"
+  #     }
+  #     iam_role_additional_policies = [
+  #       "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+  #       "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+  #     ]
+  #     labels = {
+  #       role = "worker"
+  #     }
 
-      tags = {
-        "nodegroup-role"                                     = "worker"
-        "instance-life-cycle"                                = "Ec2Spot"
-        "Name"                                               = "node-group-1"
-        "OS"                                                 = "AmazonLinux2"
-        "k8s.io/cluster-autoscaler/enabled"                  = "true"
-        "k8s.io/cluster-autoscaler/${var.cluster_name}"      = "owned"
-        "k8s.io/cluster-autoscaler/node-template/label/role" = "worker"
-      }
-    }
+  #     tags = {
+  #       "nodegroup-role"                                     = "worker"
+  #       "instance-life-cycle"                                = "Ec2Spot"
+  #       "Name"                                               = "node-group-1"
+  #       "OS"                                                 = "AmazonLinux2"
+  #       "k8s.io/cluster-autoscaler/enabled"                  = "true"
+  #       "k8s.io/cluster-autoscaler/${var.cluster_name}"      = "owned"
+  #       "k8s.io/cluster-autoscaler/node-template/label/role" = "worker"
+  #     }
+  #   }
 
-  }
+  # }
 }
 
 module "vpc_cni_irsa" {
@@ -149,14 +149,14 @@ resource "helm_release" "ebs_csi_driver" {
   repository = "https://charts.deliveryhero.io/"
   chart      = "aws-ebs-csi-driver"
 
-  depends_on = [ module.eks ]
+  depends_on = [module.eks]
 }
 
 resource "helm_release" "task-management" {
   name  = "task-management"
   chart = "../${path.module}/helm/task-management/task-management-0.0.2.tgz"
 
-  depends_on = [ module.eks ]
+  depends_on = [module.eks]
 
   set {
     name  = "database.host"

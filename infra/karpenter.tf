@@ -7,6 +7,15 @@ module "karpenter" {
   irsa_namespace_service_accounts = [
     "karpenter:karpenter",
   ]
+
+  iam_role_additional_policies = [
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+  ]
+
+  tags = {
+    "createdBy" = "karpenter"
+  }
 }
 
 resource "helm_release" "karpenter" {
@@ -18,7 +27,7 @@ resource "helm_release" "karpenter" {
   chart      = "karpenter"
   version    = "v0.19.1"
 
-  depends_on = [ helm_release.aws_load_balancer_controller ]
+  depends_on = [helm_release.aws_load_balancer_controller]
 
   set {
     name  = "settings.aws.clusterName"
