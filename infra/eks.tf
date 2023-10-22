@@ -146,11 +146,11 @@ resource "aws_security_group_rule" "jumphost-to-eks-controlplane" {
   source_security_group_id = aws_security_group.jump_host_sg.id
 }
 
-resource "helm_release" "ebs_csi_driver" {
-  name       = "ebs-csi-driver"
-  repository = "https://charts.deliveryhero.io/"
-  chart      = "aws-ebs-csi-driver"
-}
+# resource "helm_release" "ebs_csi_driver" {
+#   name       = "ebs-csi-driver"
+#   repository = "https://charts.deliveryhero.io/"
+#   chart      = "aws-ebs-csi-driver"
+# }
 
 resource "helm_release" "task-management" {
   name  = "task-management"

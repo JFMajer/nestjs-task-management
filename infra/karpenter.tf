@@ -19,6 +19,8 @@ module "karpenter" {
   tags = {
     "createdBy" = "karpenter"
   }
+
+  depends_on = [ resource.aws_ec2_tag.cluster_sg_additional_tag ]
 }
 
 resource "helm_release" "karpenter" {
