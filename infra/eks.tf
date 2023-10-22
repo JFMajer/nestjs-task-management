@@ -32,8 +32,8 @@ module "eks" {
   cluster_endpoint_public_access  = true
   enable_irsa                     = true
 
-  create_cluster_security_group = false
-  create_node_security_group    = false
+  # create_cluster_security_group = false
+  # create_node_security_group    = false
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -139,6 +139,7 @@ resource "aws_eks_addon" "coredns" {
   addon_name   = "coredns"
 
   addon_version = "v1.10.1-eksbuild.4"
+  resolve_conflicts_on_create = "OVERWRITE"
 }
 
 module "vpc_cni_irsa" {
