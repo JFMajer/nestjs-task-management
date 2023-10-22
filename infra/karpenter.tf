@@ -8,6 +8,9 @@ module "karpenter" {
     "karpenter:karpenter",
   ]
 
+  create_iam_role = false
+  iam_role_arn    = module.eks.eks_managed_node_groups["default_node_group"].iam_role_arn
+
   iam_role_additional_policies = [
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
