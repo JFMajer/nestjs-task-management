@@ -15,21 +15,21 @@ spec:
         app: task-management
     spec:
       containers:
-      - name: task-management
-        image: {{ .Values.image }}
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DB_HOST
-          value: {{ .Values.database.host }}
-        - name: DB_PASSWORD
-          value: {{ .Values.database.password }}
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "1Gi"
-          limits:
-            memory: "1Gi"
+        - name: task-management
+          image: {{ .Values.image }}
+          ports:
+          - containerPort: 3000
+          env:
+          - name: DB_HOST
+            value: {{ .Values.database.host }}
+          - name: DB_PASSWORD
+            value: {{ .Values.database.password }}
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              memory: "1Gi"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
