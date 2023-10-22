@@ -114,7 +114,7 @@ module "eks" {
 }
 
 resource "aws_ec2_tag" "cluster_sg_additional_tag" {
-  resource_id = module.eks.cluster_security_group_id
+  resource_id = module.eks.cluster_primary_security_group_id
   key         = "karpenter.sh/discovery"
   value       = module.eks.cluster_name
 }

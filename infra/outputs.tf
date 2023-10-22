@@ -28,7 +28,7 @@ output "identity-oidc-issuer" {
 }
 
 output "cluster_primary_sg_id" {
-  value =module.eks.cluster_primary_security_group_id
+  value = module.eks.cluster_primary_security_group_id
 }
 
 output "cluster_sg_id" {
