@@ -68,7 +68,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
       requirements:
         - key: karpenter.k8s.aws/instance-category
           operator: In
-          values: ["c", "m", "r"]
+          values: ["r", "m", "c"]
         - key: karpenter.k8s.aws/instance-size
           operator: In
           values: ["medium", "large", "xlarge", "2xlarge"]
