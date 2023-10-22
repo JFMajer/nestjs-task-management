@@ -19,9 +19,6 @@ module "eks" {
   cloudwatch_log_group_retention_in_days = 3
 
   cluster_addons = {
-    coredns = {
-      resolve_conflicts = "OVERWRITE"
-    }
     kube-proxy = {}
     vpc-cni = {
       resolve_conflicts        = "OVERWRITE"
@@ -66,13 +63,6 @@ module "eks" {
   }
 
   fargate_profiles = {
-    kube_system = {
-      name = "kube-system"
-      selectors = [
-        { namespace = "kube-system" }
-      ]
-    }
-
     karpenter = {
       name = "karpenter"
       selectors = [
@@ -134,6 +124,15 @@ module "eks" {
   # }
 }
 
+resource "aws_eks_addon" "coredns" {
+  cluster_name = module.eks.cluster_name
+  addon_name   = "coredns"
+
+  addon_version = "v1.10.1-eksbuild.4"
+
+  depends_on = [ helm_release.karpenter ]
+}
+
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 4.12"
@@ -165,14 +164,14 @@ resource "helm_release" "ebs_csi_driver" {
   repository = "https://charts.deliveryhero.io/"
   chart      = "aws-ebs-csi-driver"
 
-  depends_on = [module.eks]
+  depends_on = [helm_release.karpenter]
 }
 
 resource "helm_release" "task-management" {
   name  = "task-management"
   chart = "../${path.module}/helm/task-management/task-management-0.0.2.tgz"
 
-  depends_on = [module.eks]
+  depends_on = [helm_release.karpenter]
 
   set {
     name  = "database.host"
