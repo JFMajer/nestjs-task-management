@@ -84,9 +84,9 @@ module "eks" {
       echo "you are free little kubelet!"
       EOT
 
-      min_size     = 1
-      max_size     = 6
-      desired_size = 1
+      min_size     = 2
+      max_size     = 3
+      desired_size = 2
 
       create_iam_role          = true
       iam_role_name            = "eks-managed-node-group-role"
@@ -155,8 +155,6 @@ resource "helm_release" "ebs_csi_driver" {
 resource "helm_release" "task-management" {
   name  = "task-management"
   chart = "../${path.module}/helm/task-management-0.0.3.tgz"
-
-  depends_on = [helm_release.karpenter]
 
   set {
     name  = "database.host"
