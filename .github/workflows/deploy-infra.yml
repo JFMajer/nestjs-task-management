@@ -56,6 +56,11 @@ jobs:
         run: terraform init
       # - name: Unlock state
       #   run: terraform force-unlock -force "c865c997-8364-3547-bd55-b023698d69bb"
+      - name: remove modules from state
+        working-directory: ${{ env.WORKING_DIR }}
+        run: | 
+          terraform state rm kubernetes_service_account.aws_load_balancer_controller
+          terraform state rm module.eks.kubernetes_config_map.aws_auth
       - name: Terraform Plan
         working-directory: ${{ env.WORKING_DIR }}
         run: terraform plan -out=plan.out
