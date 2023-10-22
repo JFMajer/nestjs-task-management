@@ -66,6 +66,13 @@ module "eks" {
   }
 
   fargate_profiles = {
+    kube_system = {
+      selectors = [
+        {
+          namespace = "kube-system"
+        }
+      ]
+    }
     karpenter = {
       name = "karpenter"
       selectors = [

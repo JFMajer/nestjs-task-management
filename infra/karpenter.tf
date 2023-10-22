@@ -27,8 +27,6 @@ resource "helm_release" "karpenter" {
   chart      = "karpenter"
   version    = "v0.31.0"
 
-  depends_on = [aws_eks_addon.coredns]
-
   set {
     name  = "settings.aws.clusterName"
     value = module.eks.cluster_name
