@@ -148,8 +148,6 @@ resource "helm_release" "ebs_csi_driver" {
   name       = "ebs-csi-driver"
   repository = "https://charts.deliveryhero.io/"
   chart      = "aws-ebs-csi-driver"
-
-  depends_on = [helm_release.karpenter]
 }
 
 resource "helm_release" "task-management" {
