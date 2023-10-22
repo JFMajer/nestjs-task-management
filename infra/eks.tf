@@ -65,6 +65,22 @@ module "eks" {
     "karpenter.sh/discovery" = var.cluster_name
   }
 
+  fargate_profiles = {
+    kube_system = {
+      name = "kube-system"
+      selectors = [
+        { namespace = "kube-system" }
+      ]
+    }
+
+    karpenter = {
+      name = "karpenter"
+      selectors = [
+        { namespace = "karpenter" }
+      ]
+    }
+  }
+
 
   # eks_managed_node_groups = {
   #   default_node_group = {
