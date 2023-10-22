@@ -60,7 +60,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
         run: | 
           terraform state rm kubernetes_service_account.aws_load_balancer_controller
-          terraform state rm module.eks.kubernetes_config_map.aws_auth
+          terraform state rm module.eks.kubernetes_config_map_v1_data.aws_auth[0]
       - name: Terraform Plan
         working-directory: ${{ env.WORKING_DIR }}
         run: terraform plan -out=plan.out
