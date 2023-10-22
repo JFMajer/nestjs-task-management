@@ -79,7 +79,8 @@ resource "kubectl_manifest" "karpenter_provisioner" {
           memory: "32Gi"
       providerRef:
         name: default
-      ttlSecondsAfterEmpty: 30
+      consolidation:
+        enabled: true
   YAML
 
   depends_on = [

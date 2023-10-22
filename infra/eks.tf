@@ -19,6 +19,9 @@ module "eks" {
   cloudwatch_log_group_retention_in_days = 3
 
   cluster_addons = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+    }
     kube-proxy = {}
     vpc-cni = {
       resolve_conflicts        = "OVERWRITE"
@@ -32,18 +35,15 @@ module "eks" {
   cluster_endpoint_public_access  = true
   enable_irsa                     = true
 
-  # create_cluster_security_group = false
-  # create_node_security_group    = false
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   manage_aws_auth_configmap = true
 
-  # eks_managed_node_group_defaults = {
-  #   # ami_type                   = "AL2_x86_64"
-  #   iam_role_attach_cni_policy = true
-  # }
+  eks_managed_node_group_defaults = {
+    # ami_type                   = "AL2_x86_64"
+    iam_role_attach_cni_policy = true
+  }
 
   aws_auth_roles = [
     {
@@ -65,82 +65,58 @@ module "eks" {
     "karpenter.sh/discovery" = var.cluster_name
   }
 
-  fargate_profiles = {
-    kube_system = {
-      selectors = [
-        {
-          namespace = "kube-system"
-        }
+  eks_managed_node_groups = {
+    default_node_group = {
+      create_launch_template = false
+      launch_template_name   = ""
+      name                   = "node-group-1"
+      capacity_type          = "SPOT"
+      instance_types         = ["c7i.xlarge"]
+
+      ami_id = data.aws_ami.eks_default.image_id
+
+      pre_bootstrap_user_data = <<-EOT
+      export CONTAINER_RUNTIME="containerd"
+      export USE_MAX_PODS=false
+      EOT
+
+      post_bootstrap_user_data = <<-EOT
+      echo "you are free little kubelet!"
+      EOT
+
+      min_size     = 1
+      max_size     = 6
+      desired_size = 1
+
+      create_iam_role          = true
+      iam_role_name            = "eks-managed-node-group-role"
+      iam_role_use_name_prefix = false
+      iam_role_description     = "EKS managed node group role"
+      iam_role_tags = {
+        Purpose = "Protector of the kubelet"
+      }
+      iam_role_additional_policies = [
+        "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+        "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
       ]
+      labels = {
+        role = "worker"
+      }
+
+      tags = {
+        "nodegroup-role"                                     = "worker"
+        "instance-life-cycle"                                = "Ec2Spot"
+        "Name"                                               = "node-group-1"
+        "OS"                                                 = "AmazonLinux2"
+        "k8s.io/cluster-autoscaler/enabled"                  = "true"
+        "k8s.io/cluster-autoscaler/${var.cluster_name}"      = "owned"
+        "k8s.io/cluster-autoscaler/node-template/label/role" = "worker"
+      }
     }
-    karpenter = {
-      name = "karpenter"
-      selectors = [
-        { namespace = "karpenter" }
-      ]
-    }
+
   }
-
-
-  # eks_managed_node_groups = {
-  #   default_node_group = {
-  #     create_launch_template = false
-  #     launch_template_name   = ""
-  #     name                   = "node-group-1"
-  #     capacity_type          = "SPOT"
-  #     instance_types         = ["c7i.xlarge"]
-
-  #     ami_id = data.aws_ami.eks_default.image_id
-
-  #     pre_bootstrap_user_data = <<-EOT
-  #     export CONTAINER_RUNTIME="containerd"
-  #     export USE_MAX_PODS=false
-  #     EOT
-
-  #     post_bootstrap_user_data = <<-EOT
-  #     echo "you are free little kubelet!"
-  #     EOT
-
-  #     min_size     = 1
-  #     max_size     = 6
-  #     desired_size = 1
-
-  #     create_iam_role          = true
-  #     iam_role_name            = "eks-managed-node-group-role"
-  #     iam_role_use_name_prefix = false
-  #     iam_role_description     = "EKS managed node group role"
-  #     iam_role_tags = {
-  #       Purpose = "Protector of the kubelet"
-  #     }
-  #     iam_role_additional_policies = [
-  #       "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  #       "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
-  #     ]
-  #     labels = {
-  #       role = "worker"
-  #     }
-
-  #     tags = {
-  #       "nodegroup-role"                                     = "worker"
-  #       "instance-life-cycle"                                = "Ec2Spot"
-  #       "Name"                                               = "node-group-1"
-  #       "OS"                                                 = "AmazonLinux2"
-  #       "k8s.io/cluster-autoscaler/enabled"                  = "true"
-  #       "k8s.io/cluster-autoscaler/${var.cluster_name}"      = "owned"
-  #       "k8s.io/cluster-autoscaler/node-template/label/role" = "worker"
-  #     }
-  #   }
-
-  # }
 }
 
-resource "aws_eks_addon" "coredns" {
-  cluster_name = module.eks.cluster_name
-  addon_name   = "coredns"
-
-  addon_version = "v1.10.1-eksbuild.4"
-  resolve_conflicts_on_create = "OVERWRITE"
-}
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
