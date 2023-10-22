@@ -63,7 +63,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
 
-  depends_on = [module.eks, module.vpc]
+  depends_on = [helm_release.karpenter]
 
   set {
     name  = "clusterName"
