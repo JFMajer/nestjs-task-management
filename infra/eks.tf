@@ -152,19 +152,19 @@ resource "helm_release" "ebs_csi_driver" {
   depends_on = [helm_release.karpenter]
 }
 
-resource "helm_release" "task-management" {
-  name  = "task-management"
-  chart = "../${path.module}/helm/task-management-0.0.3.tgz"
+# resource "helm_release" "task-management" {
+#   name  = "task-management"
+#   chart = "../${path.module}/helm/task-management-0.0.3.tgz"
 
-  depends_on = [helm_release.karpenter]
+#   depends_on = [helm_release.karpenter]
 
-  set {
-    name  = "database.host"
-    value = split(":", module.rds.db_instance_endpoint)[0]
-  }
+#   set {
+#     name  = "database.host"
+#     value = split(":", module.rds.db_instance_endpoint)[0]
+#   }
 
-  set {
-    name  = "database.password"
-    value = var.db_password
-  }
-}
+#   set {
+#     name  = "database.password"
+#     value = var.db_password
+#   }
+# }

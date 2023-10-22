@@ -4,6 +4,7 @@ metadata:
   name: task-management
   labels:
     app: task-management
+spec:
   replicas: 1
   selector:
     matchLabels:
@@ -12,6 +13,7 @@ metadata:
     metadata:
       labels:
         app: task-management
+    spec:
       containers:
       - name: task-management
         image: {{ .Values.image }}
@@ -28,7 +30,6 @@ metadata:
             memory: "1Gi"
           limits:
             memory: "1Gi"
-          spec:
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -38,4 +39,3 @@ metadata:
                 operator: In
                 values:
                 - karpenter
-
