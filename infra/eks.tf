@@ -154,7 +154,7 @@ resource "helm_release" "ebs_csi_driver" {
 
 resource "helm_release" "task-management" {
   name  = "task-management"
-  chart = "../${path.module}/helm/task-management-0.0.1.tgz"
+  chart = "../${path.module}/helm/task-management-0.0.2.tgz"
 
   depends_on = [helm_release.karpenter]
 
