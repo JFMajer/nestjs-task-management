@@ -5,6 +5,15 @@ metadata:
   labels:
     app: task-management
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: provisionedBy
+            operator: in
+            values:
+              - karpenter
   replicas: 1
   selector:
     matchLabels:

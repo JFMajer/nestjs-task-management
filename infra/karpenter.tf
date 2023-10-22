@@ -63,6 +63,8 @@ resource "kubectl_manifest" "karpenter_provisioner" {
     metadata:
       name: default
     spec:
+      labels:
+        provisionedBy: karpenter
       requirements:
         - key: karpenter.k8s.aws/instance-category
           operator: In
