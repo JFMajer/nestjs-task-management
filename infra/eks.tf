@@ -61,10 +61,6 @@ module "eks" {
     }
   ]
 
-  node_security_group_tags = {
-    "karpenter.sh/discovery" = var.cluster_name
-  }
-
   eks_managed_node_groups = {
     default_node_group = {
       create_launch_template = false
@@ -115,6 +111,12 @@ module "eks" {
     }
 
   }
+}
+
+resource "aws_ec2_tag" "cluster_sg_additional_tag" {
+  resource_id = module.eks.cluster_security_group_id
+  key         = "karpenter.sh/discovery"
+  value       = module.eks.cluster_name
 }
 
 
