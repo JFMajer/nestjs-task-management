@@ -136,8 +136,6 @@ resource "aws_eks_addon" "coredns" {
   addon_name   = "coredns"
 
   addon_version = "v1.10.1-eksbuild.4"
-
-  depends_on = [ helm_release.karpenter ]
 }
 
 module "vpc_cni_irsa" {
