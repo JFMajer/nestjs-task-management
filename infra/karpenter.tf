@@ -20,7 +20,6 @@ module "karpenter" {
     "createdBy" = "karpenter"
   }
 
-  depends_on = [ resource.aws_ec2_tag.cluster_sg_additional_tag ]
 }
 
 resource "helm_release" "karpenter" {
@@ -111,6 +110,7 @@ resource "kubectl_manifest" "karpenter_node_template" {
   YAML
 
   depends_on = [
-    helm_release.karpenter
+    helm_release.karpenter,
+    resource.aws_ec2_tag.cluster_sg_additional_tag
   ]
 }
