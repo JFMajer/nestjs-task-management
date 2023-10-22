@@ -32,6 +32,9 @@ module "eks" {
   cluster_endpoint_public_access  = true
   enable_irsa                     = true
 
+  create_cluster_security_group = false
+  create_node_security_group    = false
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
