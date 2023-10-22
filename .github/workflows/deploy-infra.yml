@@ -56,12 +56,12 @@ jobs:
         run: terraform init
       # - name: Unlock state
       #   run: terraform force-unlock -force "c865c997-8364-3547-bd55-b023698d69bb"
-      - name: State managment
-        working-directory: ${{ env.WORKING_DIR }}
-        run: | 
-          terraform state list
-          terraform state rm helm_release.karpenter
-          terraform state rm module.eks.kubernetes_config_map_v1_data.aws_auth[0]
+      # - name: State managment
+      #   working-directory: ${{ env.WORKING_DIR }}
+      #   run: | 
+      #     terraform state list
+      #     terraform state rm helm_release.karpenter
+      #     terraform state rm module.eks.kubernetes_config_map_v1_data.aws_auth[0]
       - name: Terraform Plan
         working-directory: ${{ env.WORKING_DIR }}
         run: terraform plan -out=plan.out
